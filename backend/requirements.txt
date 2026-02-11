@@ -1,7 +1,9 @@
 fastapi
-uvicorn
+uvicorn[standard]
 python-dotenv
 langchain-google-genai
 google-generativeai
 langgraph
 langchain-core
+supabase
+sse-starlette
