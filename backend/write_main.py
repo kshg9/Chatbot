@@ -1,4 +1,9 @@
-import os
+"""Script to generate the complete main.py with dual model support."""
+import pathlib
+
+EOT = chr(60) + "|endoftext|" + chr(62)
+
+content = f'''import os
 import json
 import asyncio
 from pathlib import Path
@@ -29,16 +34,16 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # ============ Load Models ============
 device = "cuda" if torch.cuda.is_available() else "cpu"
-print(f"Device: {device}")
+print(f"Device: {{device}}")
 
 config = GPTConfig()
 enc = tiktoken.get_encoding("gpt2")
-EOT_SPECIAL = "<|endoftext|>"
+EOT_SPECIAL = "{EOT}"
 
 MODEL_DIR = Path(__file__).parent.parent / "model"
 
 # Dictionary to hold all loaded models
-models = {}
+models = {{}}
 
 # Load Buddy model (emotional companion)
 print("Loading Buddy model...")
@@ -48,7 +53,7 @@ buddy_model.load_state_dict(buddy_ckpt["model_state_dict"])
 buddy_model.to(device)
 buddy_model.eval()
 models["buddy"] = buddy_model
-print(f"  Buddy loaded: {sum(p.numel() for p in buddy_model.parameters()):,} params")
+print(f"  Buddy loaded: {{sum(p.numel() for p in buddy_model.parameters()):,}} params")
 
 # Load Story Creator model (story generation)
 print("Loading Story Creator model...")
@@ -58,14 +63,14 @@ story_model.load_state_dict(story_ckpt["model_state_dict"])
 story_model.to(device)
 story_model.eval()
 models["story_creator"] = story_model
-print(f"  Story Creator loaded: {sum(p.numel() for p in story_model.parameters()):,} params")
+print(f"  Story Creator loaded: {{sum(p.numel() for p in story_model.parameters()):,}} params")
 
 # Free checkpoint memory
 del buddy_ckpt, story_ckpt
 if torch.cuda.is_available():
     torch.cuda.empty_cache()
 
-print(f"All models loaded! Available: {list(models.keys())}")
+print(f"All models loaded! Available: {{list(models.keys())}}")
 
 # ============ FastAPI App ============
 app = FastAPI(title="Buddy Chatbot API")
@@ -110,50 +115,50 @@ def get_conversation_messages(conversation_id: str) -> List[dict]:
         result = supabase.table("messages").select("*").eq("conversation_id", conversation_id).order("created_at").execute()
         return result.data or []
     except Exception as e:
-        print(f"Error fetching messages: {e}")
+        print(f"Error fetching messages: {{e}}")
         return []
 
 
 def save_message(conversation_id: str, role: str, content: str) -> dict:
     try:
-        message_data = {
+        message_data = {{
             "id": str(uuid.uuid4()),
             "conversation_id": conversation_id,
             "role": role,
             "content": content,
             "created_at": datetime.utcnow().isoformat()
-        }
+        }}
         result = supabase.table("messages").insert(message_data).execute()
         return result.data[0] if result.data else message_data
     except Exception as e:
-        print(f"Error saving message: {e}")
-        return {"id": str(uuid.uuid4()), "conversation_id": conversation_id, "role": role, "content": content}
+        print(f"Error saving message: {{e}}")
+        return {{"id": str(uuid.uuid4()), "conversation_id": conversation_id, "role": role, "content": content}}
 
 
 def create_conversation(user_id: str, title: str = "New Chat") -> dict:
     try:
-        conv_data = {
+        conv_data = {{
             "id": str(uuid.uuid4()),
             "user_id": user_id,
             "title": title,
             "created_at": datetime.utcnow().isoformat(),
             "updated_at": datetime.utcnow().isoformat()
-        }
+        }}
         result = supabase.table("conversations").insert(conv_data).execute()
         return result.data[0] if result.data else conv_data
     except Exception as e:
-        print(f"Error creating conversation: {e}")
-        return {"id": str(uuid.uuid4()), "user_id": user_id, "title": title}
+        print(f"Error creating conversation: {{e}}")
+        return {{"id": str(uuid.uuid4()), "user_id": user_id, "title": title}}
 
 
 def update_conversation_title(conversation_id: str, title: str):
     try:
-        supabase.table("conversations").update({
+        supabase.table("conversations").update({{
             "title": title,
             "updated_at": datetime.utcnow().isoformat()
-        }).eq("id", conversation_id).execute()
+        }}).eq("id", conversation_id).execute()
     except Exception as e:
-        print(f"Error updating conversation: {e}")
+        print(f"Error updating conversation: {{e}}")
 
 
 def get_user_conversations(user_id: str) -> List[dict]:
@@ -161,7 +166,7 @@ def get_user_conversations(user_id: str) -> List[dict]:
         result = supabase.table("conversations").select("*").eq("user_id", user_id).order("updated_at", desc=True).execute()
         return result.data or []
     except Exception as e:
-        print(f"Error fetching conversations: {e}")
+        print(f"Error fetching conversations: {{e}}")
         return []
 
 
@@ -170,7 +175,7 @@ def delete_conversation(conversation_id: str):
         supabase.table("messages").delete().eq("conversation_id", conversation_id).execute()
         supabase.table("conversations").delete().eq("id", conversation_id).execute()
     except Exception as e:
-        print(f"Error deleting conversation: {e}")
+        print(f"Error deleting conversation: {{e}}")
 
 
 # ============ Model Inference ============
@@ -184,14 +189,14 @@ def get_model_and_prompt(model_name: str, user_message: str):
     else:
         # Default: Buddy emotional companion
         active_model = models["buddy"]
-        formatted_prompt = f"User: {user_message}\nBuddy:"
+        formatted_prompt = f"User: {{user_message}}\\nBuddy:"
     return active_model, formatted_prompt
 
 
 def generate_response(user_message: str, model_name: str = "buddy", temperature: float = 0.6, max_new_tokens: int = 200) -> str:
     """Generate a response from the selected model (non-streaming)."""
     active_model, formatted_prompt = get_model_and_prompt(model_name, user_message)
-    tokens = enc.encode(formatted_prompt, allowed_special={EOT_SPECIAL})
+    tokens = enc.encode(formatted_prompt, allowed_special={{EOT_SPECIAL}})
     idx = torch.tensor(tokens, dtype=torch.long, device=device).unsqueeze(0)
 
     with torch.no_grad():
@@ -218,7 +223,7 @@ def generate_response(user_message: str, model_name: str = "buddy", temperature:
 def generate_tokens_stream(user_message: str, model_name: str = "buddy", temperature: float = 0.6, max_new_tokens: int = 200):
     """Generator that yields tokens one at a time for streaming."""
     active_model, formatted_prompt = get_model_and_prompt(model_name, user_message)
-    tokens = enc.encode(formatted_prompt, allowed_special={EOT_SPECIAL})
+    tokens = enc.encode(formatted_prompt, allowed_special={{EOT_SPECIAL}})
     idx = torch.tensor(tokens, dtype=torch.long, device=device).unsqueeze(0)
 
     with torch.no_grad():
@@ -250,39 +255,39 @@ async def api_create_conversation(req: ConversationCreate):
     return conv
 
 
-@app.get("/api/conversations/{user_id}")
+@app.get("/api/conversations/{{user_id}}")
 async def api_get_conversations(user_id: str):
     conversations = get_user_conversations(user_id)
-    return {"conversations": conversations}
+    return {{"conversations": conversations}}
 
 
-@app.get("/api/conversations/{conversation_id}/messages")
+@app.get("/api/conversations/{{conversation_id}}/messages")
 async def api_get_messages(conversation_id: str):
     messages = get_conversation_messages(conversation_id)
-    return {"messages": messages}
+    return {{"messages": messages}}
 
 
-@app.delete("/api/conversations/{conversation_id}")
+@app.delete("/api/conversations/{{conversation_id}}")
 async def api_delete_conversation(conversation_id: str):
     delete_conversation(conversation_id)
-    return {"success": True}
+    return {{"success": True}}
 
 
-@app.patch("/api/conversations/{conversation_id}")
+@app.patch("/api/conversations/{{conversation_id}}")
 async def api_update_conversation(conversation_id: str, title: str):
     update_conversation_title(conversation_id, title)
-    return {"success": True}
+    return {{"success": True}}
 
 
 @app.get("/api/models")
 async def list_models():
     """List available models."""
-    return {
+    return {{
         "models": [
-            {"id": "buddy", "name": "Innocent Buddy", "description": "Empathetic emotional companion"},
-            {"id": "story_creator", "name": "Story Creator", "description": "Creative story generation"},
+            {{"id": "buddy", "name": "Innocent Buddy", "description": "Empathetic emotional companion"}},
+            {{"id": "story_creator", "name": "Story Creator", "description": "Creative story generation"}},
         ]
-    }
+    }}
 
 
 # Streaming endpoint
@@ -309,19 +314,19 @@ async def generate_stream_smooth(
         for token_text in generate_tokens_stream(message, model_name=model_name, temperature=temperature):
             full_response += token_text
             for char in token_text:
-                yield f"data: {json.dumps({'content': char})}\n\n"
+                yield f"data: {{json.dumps({{'content': char}})}}\\n\\n"
                 await asyncio.sleep(0.008)
 
         # Save AI response to Supabase
         if conversation_id and user_id and full_response:
             save_message(conversation_id, "assistant", full_response)
 
-        yield "data: [DONE]\n\n"
+        yield "data: [DONE]\\n\\n"
 
     except Exception as e:
-        print(f"Streaming error: {e}")
-        yield f"data: {json.dumps({'error': str(e)})}\n\n"
-        yield "data: [DONE]\n\n"
+        print(f"Streaming error: {{e}}")
+        yield f"data: {{json.dumps({{'error': str(e)}})}}\\n\\n"
+        yield "data: [DONE]\\n\\n"
 
 
 @app.post("/api/chat/stream")
@@ -333,7 +338,7 @@ async def chat_stream(req: ChatRequest):
         conversation_id = conv["id"]
 
     async def stream_with_conv_id():
-        yield f"data: {json.dumps({'conversation_id': conversation_id})}\n\n"
+        yield f"data: {{json.dumps({{'conversation_id': conversation_id}})}}\\n\\n"
         async for chunk in generate_stream_smooth(
             message=req.message,
             conversation_id=conversation_id,
@@ -346,11 +351,11 @@ async def chat_stream(req: ChatRequest):
     return StreamingResponse(
         stream_with_conv_id(),
         media_type="text/event-stream",
-        headers={
+        headers={{
             "Cache-Control": "no-cache",
             "Connection": "keep-alive",
             "X-Accel-Buffering": "no",
-        }
+        }}
     )
 
 
@@ -379,9 +384,14 @@ async def chat(req: ChatRequest):
 
 @app.get("/health")
 def health_check():
-    return {"status": "healthy", "models": list(models.keys()), "device": device}
+    return {{"status": "healthy", "models": list(models.keys()), "device": device}}
 
 
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
+'''
+
+target = pathlib.Path(r"c:\Users\Tanmay\Desktop\Chatbot\Project\backend\main.py")
+target.write_text(content, encoding="utf-8")
+print(f"Written {len(content)} bytes to {target}")

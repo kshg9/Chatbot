@@ -23,9 +23,10 @@ interface ChatMessageProps {
   message: ChatMessageType;
   onRegenerate?: () => void;
   isDark?: boolean;
+  modelName?: string;
 }
 
-export function ChatMessage({ message, onRegenerate, isDark = false }: ChatMessageProps) {
+export function ChatMessage({ message, onRegenerate, isDark = false, modelName = 'buddy' }: ChatMessageProps) {
   const [copied, setCopied] = useState(false);
   const [feedback, setFeedback] = useState<'like' | 'dislike' | null>(null);
 
@@ -74,7 +75,7 @@ export function ChatMessage({ message, onRegenerate, isDark = false }: ChatMessa
       <div className="flex-1 min-w-0 space-y-2">
         <div className="flex items-center gap-2">
           <span className="font-semibold text-sm">
-            {isUser ? 'You' : 'AI Assistant'}
+            {isUser ? 'You' : (modelName === 'story_creator' ? 'Storyteller' : 'Buddy')}
           </span>
           <span className="text-xs text-muted-foreground">
             {formatTime(message.timestamp)}

@@ -246,6 +246,7 @@ export function ChatContainer() {
                     key={message.id}
                     message={message}
                     isDark={isDark}
+                    modelName={settings.model}
                     onRegenerate={
                       message.role === 'assistant' && !message.isStreaming
                         ? () => handleRegenerate(index)

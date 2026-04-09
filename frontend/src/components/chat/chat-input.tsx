@@ -55,7 +55,7 @@ export function ChatInput({ onSend, onStop, disabled, isGenerating }: ChatInputP
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Ask anything…"
+              placeholder="Tell Buddy how you're feeling…"
               disabled={disabled}
               rows={1}
               className={cn(

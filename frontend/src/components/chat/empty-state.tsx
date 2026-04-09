@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Sparkles, Code, FileText, Globe, Lightbulb, Zap } from 'lucide-react';
+import { Heart, SmilePlus, Frown, Flame, CloudRain, Zap } from 'lucide-react';
 
 interface EmptyStateProps {
   onSuggestionClick: (suggestion: string) => void;
@@ -9,32 +9,32 @@ interface EmptyStateProps {
 
 const suggestions = [
   {
-    icon: Code,
-    title: 'Write code',
-    description: 'Help me write a React component',
-    prompt: 'Help me write a React component for a responsive navigation bar with a hamburger menu',
-    color: 'from-blue-500 to-cyan-500',
+    icon: Frown,
+    title: 'Feeling sad',
+    description: 'Let Buddy comfort you',
+    prompt: 'I am feeling very sad today.',
+    color: 'from-blue-400 to-indigo-500',
   },
   {
-    icon: Lightbulb,
-    title: 'Brainstorm ideas',
-    description: 'Generate creative concepts',
-    prompt: 'Brainstorm 10 unique startup ideas in the AI space',
-    color: 'from-yellow-500 to-orange-500',
+    icon: Flame,
+    title: 'Feeling angry',
+    description: 'Buddy will listen patiently',
+    prompt: 'I am Angry and Sad.',
+    color: 'from-red-400 to-orange-500',
   },
   {
-    icon: FileText,
-    title: 'Summarize text',
-    description: 'Condense long documents',
-    prompt: 'Summarize the key points of this article for me',
-    color: 'from-green-500 to-emerald-500',
+    icon: SmilePlus,
+    title: 'Feeling happy',
+    description: 'Share your joy with Buddy',
+    prompt: 'Look at me, I am so happy and brave!',
+    color: 'from-yellow-400 to-amber-500',
   },
   {
-    icon: Globe,
-    title: 'Learn something',
-    description: 'Explain complex topics',
-    prompt: 'Explain how large language models work in simple terms',
-    color: 'from-purple-500 to-pink-500',
+    icon: CloudRain,
+    title: 'Feeling tired',
+    description: 'Buddy understands exhaustion',
+    prompt: 'I had a very tired day.',
+    color: 'from-teal-400 to-cyan-500',
   },
 ];
 
@@ -85,7 +85,7 @@ export function EmptyState({ onSuggestionClick }: EmptyStateProps) {
               damping: 15,
               delay: 0.1 
             }}
-            className="w-20 h-20 md:w-24 md:h-24 mx-auto rounded-3xl bg-gradient-to-br from-primary via-purple-500 to-pink-500 flex items-center justify-center shadow-2xl shadow-primary/40"
+            className="w-20 h-20 md:w-24 md:h-24 mx-auto rounded-3xl bg-gradient-to-br from-pink-400 via-rose-400 to-red-400 flex items-center justify-center shadow-2xl shadow-pink-400/40"
           >
             <motion.div
               animate={{ 
@@ -97,7 +97,7 @@ export function EmptyState({ onSuggestionClick }: EmptyStateProps) {
                 repeatDelay: 3 
               }}
             >
-              <Sparkles className="h-10 w-10 md:h-12 md:w-12 text-white" />
+              <Heart className="h-10 w-10 md:h-12 md:w-12 text-white" />
             </motion.div>
           </motion.div>
           
@@ -119,7 +119,7 @@ export function EmptyState({ onSuggestionClick }: EmptyStateProps) {
           variants={itemVariants}
           className="text-2xl md:text-4xl font-bold mb-3 md:mb-4 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text"
         >
-          How can I help you today?
+          Hey, I&apos;m your Innocent Buddy!
         </motion.h1>
 
         {/* Subtitle */}
@@ -127,7 +127,7 @@ export function EmptyState({ onSuggestionClick }: EmptyStateProps) {
           variants={itemVariants}
           className="text-muted-foreground mb-10 md:mb-12 text-base md:text-lg max-w-md mx-auto"
         >
-          Start a conversation or try one of these suggestions
+          Tell me how you&apos;re feeling — I&apos;m here to listen and care 💛
         </motion.p>
 
         {/* Suggestions grid */}
@@ -174,7 +174,7 @@ export function EmptyState({ onSuggestionClick }: EmptyStateProps) {
         >
           <p className="text-xs text-muted-foreground/60 flex items-center justify-center gap-2">
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-            Powered by Google Gemini
+            Buddy is here for you — powered by your custom fine-tuned model
           </p>
         </motion.div>
       </motion.div>

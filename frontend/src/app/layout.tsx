@@ -9,13 +9,13 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "AI Chatbot | Premium AI Assistant",
-  description: "A modern, premium AI chatbot platform powered by advanced language models",
-  keywords: ["AI", "chatbot", "assistant", "language model", "GPT", "Gemini"],
-  authors: [{ name: "AI Chatbot" }],
+  title: "Innocent Buddy | Your Empathetic AI Companion",
+  description: "Chat with Innocent Buddy — a fine-tuned AI companion that understands your emotions and responds with warmth and care",
+  keywords: ["AI", "chatbot", "buddy", "empathetic", "companion", "emotional support"],
+  authors: [{ name: "Innocent Buddy" }],
   openGraph: {
-    title: "AI Chatbot | Premium AI Assistant",
-    description: "A modern, premium AI chatbot platform",
+    title: "Innocent Buddy | Your Empathetic AI Companion",
+    description: "Chat with Innocent Buddy — an AI that truly understands you",
     type: "website",
   },
 };

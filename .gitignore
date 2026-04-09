@@ -7,6 +7,10 @@ __pycache__/
 frontend/.next/
 frontend/out/
 
+# Model
+model/buddy_model_final.pt
+model/tiny_transformer_iter_15000.pt
+
 # IDE
 .vscode/
 .idea/

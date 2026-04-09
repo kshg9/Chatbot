@@ -172,16 +172,42 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     {/* Model selector */}
                     <div>
                       <h3 className="text-sm font-medium mb-4">Model</h3>
-                      <select
-                        value={settings.model}
-                        onChange={(e) => updateSettings({ model: e.target.value })}
-                        className="w-full px-4 py-2 rounded-xl border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-                      >
-                        <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
-                        <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
-                        <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
-                        <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
-                      </select>
+                      <div className="space-y-3">
+                        {[
+                          {
+                            id: 'buddy',
+                            name: 'Innocent Buddy',
+                            description: 'Empathetic emotional companion',
+                            emoji: '💛',
+                          },
+                          {
+                            id: 'story_creator',
+                            name: 'Story Creator',
+                            description: 'Creative story generation',
+                            emoji: '📖',
+                          },
+                        ].map((model) => (
+                          <button
+                            key={model.id}
+                            onClick={() => updateSettings({ model: model.id })}
+                            className={cn(
+                              'w-full flex items-center gap-3 p-4 rounded-xl border-2 transition-all duration-200 text-left',
+                              settings.model === model.id
+                                ? 'border-primary bg-primary/10'
+                                : 'border-border hover:border-primary/50 hover:bg-secondary/50'
+                            )}
+                          >
+                            <span className="text-2xl">{model.emoji}</span>
+                            <div>
+                              <p className="font-medium text-sm">{model.name}</p>
+                              <p className="text-xs text-muted-foreground">{model.description}</p>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-3">
+                        Both models run locally on your machine
+                      </p>
                     </div>
 
                     {/* Temperature slider */}

@@ -75,8 +75,8 @@ export const useChatStore = create<ChatStore>()(
       isLoading: false,
       settings: {
         theme: 'system',
-        model: 'gemini-2.5-flash',
-        temperature: 0.7,
+        model: 'buddy',
+        temperature: 0.6,
       },
 
       setUserId: (userId) => set({ userId }),

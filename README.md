@@ -18,7 +18,6 @@ A modern, premium AI chatbot web application built with Next.js 15, Tailwind CSS
 
 ### Backend
 - ⚡ FastAPI with streaming support
-- 🤖 Powered by Google Gemini LLM
 - 🧠 LangGraph for conversation management
 - 💾 Memory persistence with checkpointing
 
