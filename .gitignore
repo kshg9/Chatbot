@@ -2,22 +2,35 @@
 node_modules/
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
 
 # Next.js
 frontend/.next/
 frontend/out/
 
-# Model
-model/buddy_model_final.pt
-model/tiny_transformer_iter_15000.pt
+# Local environment files
+.env
+.env.local
+frontend/.env.local
 
-# IDE
-.vscode/
-.idea/
+# Model artifacts and checkpoints
+model/
+.nanochat_model/
+.nanochat_upstream/
+*.pt
+*.bin
+*.safetensors
+*.ckpt
+*.pkl
 
 # OS
 .DS_Store
 Thumbs.db
+
+# IDE
+.vscode/
+.idea/
 
 # Jupyter
 .ipynb_checkpoints/

@@ -146,6 +146,12 @@ export function ChatContainer() {
                 // Handle errors
                 if (parsed.error) {
                   console.error('Stream error:', parsed.error);
+                  appendToMessage(
+                    chatId,
+                    assistantMessageId,
+                    `\n\n[Error: ${parsed.error}]`
+                  );
+                  setMessageStreaming(chatId, assistantMessageId, false);
                 }
               } catch {
                 // Ignore parse errors for incomplete chunks

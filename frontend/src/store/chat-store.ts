@@ -75,7 +75,7 @@ export const useChatStore = create<ChatStore>()(
       isLoading: false,
       settings: {
         theme: 'system',
-        model: 'buddy',
+        model: 'nanochat',
         temperature: 0.6,
       },
 

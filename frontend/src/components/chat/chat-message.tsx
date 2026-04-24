@@ -31,6 +31,8 @@ export function ChatMessage({ message, onRegenerate, isDark = false, modelName =
   const [feedback, setFeedback] = useState<'like' | 'dislike' | null>(null);
 
   const isUser = message.role === 'user';
+  const assistantLabel =
+    modelName === 'story_creator' ? 'Storyteller' : modelName === 'nanochat' ? 'NanoChat' : 'Buddy';
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(message.content);
@@ -75,7 +77,7 @@ export function ChatMessage({ message, onRegenerate, isDark = false, modelName =
       <div className="flex-1 min-w-0 space-y-2">
         <div className="flex items-center gap-2">
           <span className="font-semibold text-sm">
-            {isUser ? 'You' : (modelName === 'story_creator' ? 'Storyteller' : 'Buddy')}
+            {isUser ? 'You' : assistantLabel}
           </span>
           <span className="text-xs text-muted-foreground">
             {formatTime(message.timestamp)}

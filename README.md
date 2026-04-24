@@ -40,6 +40,20 @@ A modern, premium AI chatbot web application built with Next.js 15, Tailwind CSS
 
 ## Getting Started
 
+## Repo Size + Reproducibility
+
+- Model checkpoints and tokenizers are intentionally ignored by git.
+- Use this command to fetch NanoChat model files locally:
+
+```bash
+python backend/download_nanochat.py
+```
+
+- This creates:
+  - `model/model_000650.pt`
+  - `model/nanochat/meta_000650.json`
+  - `model/nanochat/tokenizer.pkl`
+
 ### Prerequisites
 - Node.js 18+
 - Python 3.9+
@@ -66,8 +80,10 @@ pip install -r requirements.txt
 
 4. Create a `.env` file:
 ```env
-GOOGLE_API_KEY=your_google_api_key_here
+SUPABASE_URL=your_supabase_url
+SUPABASE_KEY=your_supabase_service_role_key
 ```
+You can copy from `backend/.env.example`.
 
 5. Start the backend server:
 ```bash
@@ -86,7 +102,7 @@ cd frontend
 npm install
 ```
 
-3. The `.env.local` file is already configured with Supabase credentials.
+3. Create `frontend/.env.local` locally from `frontend/.env.local.example` (do not commit it).
 
 4. Start the development server:
 ```bash

@@ -186,6 +186,12 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                             description: 'Creative story generation',
                             emoji: '📖',
                           },
+                          {
+                            id: 'nanochat',
+                            name: 'NanoChat',
+                            description: 'NanoChat pretrained checkpoint',
+                            emoji: 'N',
+                          },
                         ].map((model) => (
                           <button
                             key={model.id}
@@ -206,7 +212,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                         ))}
                       </div>
                       <p className="text-xs text-muted-foreground mt-3">
-                        Both models run locally on your machine
+                        All models run locally on your machine
                       </p>
                     </div>
 
