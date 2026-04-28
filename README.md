@@ -1,180 +1,87 @@
-# AI Chatbot - Premium Web Application
+# Offline NanoChat Workbench
 
-A modern, premium AI chatbot web application built with Next.js 15, Tailwind CSS, and FastAPI backend with streaming support.
+This project now runs offline as a single Next.js application with local SQLite persistence and Python-based model inference.
 
-## Features
+## Architecture
 
-### Frontend
-- 🎨 Modern, minimal, premium design
-- 🌙 Dark/Light mode with system preference support
-- 💬 Real-time streaming responses
-- 📝 Markdown rendering with syntax highlighting
-- 📎 File attachment support
-- 🔍 Chat search functionality
-- ✏️ Rename/Delete conversations
-- ⚙️ Settings modal with model selection
-- 📱 Fully responsive design
-- 🔐 Supabase authentication
+- `frontend/` is the only app you run.
+- `frontend/src/app/actions.ts` contains server actions for chat CRUD and generation.
+- `frontend/src/lib/offline-db.ts` stores conversations, messages, and settings in SQLite.
+- `backend/offline_inference.py` loads the local checkpoints and generates replies.
+- `backend/model_config.py` and `backend/nanochat_runtime.py` are reused as the model runtime layer.
 
-### Backend
-- ⚡ FastAPI with streaming support
-- 🧠 LangGraph for conversation management
-- 💾 Memory persistence with checkpointing
+There is no Supabase dependency in the active app flow and no FastAPI server to start.
 
-## Tech Stack
+## Model files
 
-### Frontend
-- Next.js 15 (App Router)
-- TypeScript
-- Tailwind CSS
-- Framer Motion (Animations)
-- Zustand (State Management)
-- Supabase (Authentication & Database)
-- React Markdown + Syntax Highlighter
-
-### Backend
-- FastAPI
-- LangChain + LangGraph
-- Google Gemini AI
-- Server-Sent Events (SSE) for streaming
-
-## Getting Started
-
-## Repo Size + Reproducibility
-
-- Model checkpoints and tokenizers are intentionally ignored by git.
-- Use this command to fetch NanoChat model files locally:
+After running:
 
 ```bash
 python backend/download_nanochat.py
 ```
 
-- This creates:
-  - `model/model_000650.pt`
-  - `model/nanochat/meta_000650.json`
-  - `model/nanochat/tokenizer.pkl`
+you should have local files like:
 
-### Prerequisites
-- Node.js 18+
-- Python 3.9+
-- Google API Key for Gemini
-- Supabase account
+```text
+model/
+├── model_000650.pt
+├── tokenizer.pkl
+└── nanochat/
+    ├── meta_000650.json
+    └── tokenizer.pkl
+```
 
-### Backend Setup
+The offline runtime reads those files directly.
 
-1. Navigate to the backend directory:
+## Local data
+
+SQLite is created automatically at:
+
+```text
+frontend/.data/chatbot.db
+```
+
+That database stores:
+
+- conversations
+- messages
+- app settings such as model and temperature
+
+## Run it
+
+### Python runtime dependencies
+
 ```bash
 cd backend
-```
-
-2. Create a virtual environment:
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-3. Install dependencies:
-```bash
+python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-4. Create a `.env` file:
-```env
-SUPABASE_URL=your_supabase_url
-SUPABASE_KEY=your_supabase_service_role_key
-```
-You can copy from `backend/.env.example`.
+### Frontend dependencies
 
-5. Start the backend server:
-```bash
-uvicorn main:app --reload --port 8000
-```
-
-### Frontend Setup
-
-1. Navigate to the frontend directory:
 ```bash
 cd frontend
-```
-
-2. Install dependencies:
-```bash
 npm install
 ```
 
-3. Create `frontend/.env.local` locally from `frontend/.env.local.example` (do not commit it).
+### Start the app
 
-4. Start the development server:
 ```bash
+cd frontend
 npm run dev
 ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+Then open `http://localhost:3000`.
 
-### Supabase Setup
+## Current behavior
 
-1. Go to your Supabase project dashboard
-2. Navigate to **SQL Editor**
-3. Run the SQL from `supabase-schema.sql` to create tables and policies
-4. Enable Email authentication in **Authentication > Providers**
+- chats are stored locally in SQLite
+- generation runs locally through Python
+- model selection and temperature are stored locally
+- conversation history is passed into the offline runtime as prompt context
 
-## Project Structure
+## Important notes
 
-```
-Project/
-├── backend/
-│   ├── main.py              # FastAPI server with streaming
-│   └── requirements.txt     # Python dependencies
-├── frontend/
-│   ├── src/
-│   │   ├── app/            # Next.js pages
-│   │   ├── components/     # React components
-│   │   │   ├── chat/       # Chat-related components
-│   │   │   ├── auth/       # Authentication components
-│   │   │   └── ui/         # UI primitives
-│   │   ├── lib/            # Utilities
-│   │   └── store/          # Zustand stores
-│   └── .env.local          # Environment variables
-└── supabase-schema.sql     # Database schema
-```
-
-## API Endpoints
-
-### Backend
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/chat` | Non-streaming chat endpoint |
-| POST | `/api/chat/stream` | Streaming chat endpoint (SSE) |
-| GET | `/health` | Health check |
-
-### Request Body
-```json
-{
-  "message": "Hello, AI!",
-  "thread_id": "unique-chat-id",
-  "model": "gemini-2.5-flash",
-  "temperature": 0.7
-}
-```
-
-## Customization
-
-### Adding New Models
-Edit `settings-modal.tsx` to add more model options:
-```tsx
-<option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
-```
-
-### Changing Theme Colors
-Edit `globals.css` to customize the color palette:
-```css
-:root {
-  --primary: #6366f1;
-  /* ... */
-}
-```
-
-## License
-
-MIT License
+- The old Supabase schema and FastAPI files are still in the repo as legacy material, but the active app flow no longer depends on them.
+- If you want to remove the legacy code entirely, the next cleanup pass should delete the unused Supabase/auth/UI files and trim the Python directory to inference-only files.

@@ -1,21 +1,15 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 
-const inter = Inter({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "Innocent Buddy | Your Empathetic AI Companion",
-  description: "Chat with Innocent Buddy — a fine-tuned AI companion that understands your emotions and responds with warmth and care",
-  keywords: ["AI", "chatbot", "buddy", "empathetic", "companion", "emotional support"],
-  authors: [{ name: "Innocent Buddy" }],
+  title: "Offline NanoChat Workbench",
+  description: "A local-first chat interface that stores conversations in SQLite and runs the model on-device.",
+  keywords: ["offline", "sqlite", "local model", "nanochat", "next.js", "pytorch"],
+  authors: [{ name: "Offline NanoChat Workbench" }],
   openGraph: {
-    title: "Innocent Buddy | Your Empathetic AI Companion",
-    description: "Chat with Innocent Buddy — an AI that truly understands you",
+    title: "Offline NanoChat Workbench",
+    description: "Local SQLite chat storage with on-device model inference.",
     type: "website",
   },
 };
@@ -27,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} antialiased`}>
+      <body className="antialiased">
         <Providers>{children}</Providers>
       </body>
     </html>

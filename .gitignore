@@ -34,3 +34,12 @@ Thumbs.db
 
 # Jupyter
 .ipynb_checkpoints/
+
+# Project-specific runtime and artifacts
+/backend/.venv/
+.data/
+.codex
+.glimpse
+
+# Ignore frontend/node_modules explicitly (node_modules/ already covered)
+/frontend/node_modules/

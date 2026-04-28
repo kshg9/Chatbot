@@ -7,16 +7,10 @@ interface ThemeProviderProps {
 }
 
 export function ThemeProvider({ children }: ThemeProviderProps) {
-  const [mounted, setMounted] = useState(false);
-
   useEffect(() => {
-    setMounted(true);
-    
-    // Get theme from localStorage or system preference
     const savedTheme = localStorage.getItem('theme') || 'system';
     applyTheme(savedTheme);
 
-    // Listen for system theme changes
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleChange = () => {
       const currentTheme = localStorage.getItem('theme') || 'system';
@@ -28,10 +22,6 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     mediaQuery.addEventListener('change', handleChange);
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
-
-  if (!mounted) {
-    return <>{children}</>;
-  }
 
   return <>{children}</>;
 }
@@ -50,12 +40,9 @@ export function applyTheme(theme: string) {
 }
 
 export function useTheme() {
-  const [theme, setThemeState] = useState<string>('system');
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') || 'system';
-    setThemeState(savedTheme);
-  }, []);
+  const [theme, setThemeState] = useState<string>(() =>
+    typeof window === 'undefined' ? 'system' : localStorage.getItem('theme') || 'system'
+  );
 
   const setTheme = (newTheme: string) => {
     setThemeState(newTheme);

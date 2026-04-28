@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useRouter } from 'next/navigation';
 import {
   MessageSquarePlus,
   Search,
@@ -13,13 +12,10 @@ import {
   Edit3,
   Check,
   X,
-  LogOut,
-  LogIn,
   User,
   MessageCircle,
 } from 'lucide-react';
 import { useChatStore, type Chat } from '@/store/chat-store';
-import { useAuthStore } from '@/store/auth-store';
 import { cn, formatDate, truncateText } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -29,7 +25,6 @@ interface SidebarProps {
 }
 
 export function Sidebar({ onSettingsClick }: SidebarProps) {
-  const router = useRouter();
   const {
     chats,
     currentChatId,
@@ -40,8 +35,6 @@ export function Sidebar({ onSettingsClick }: SidebarProps) {
     renameChat,
     setCurrentChat,
   } = useChatStore();
-
-  const { user, signOut } = useAuthStore();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -259,51 +252,21 @@ export function Sidebar({ onSettingsClick }: SidebarProps) {
               Settings
             </Button>
 
-            {user ? (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex items-center gap-3 p-3 rounded-xl bg-secondary/50 border border-border"
-              >
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center shadow-lg">
-                  <User className="h-5 w-5 text-white" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">
-                    {user.email?.split('@')[0]}
-                  </p>
-                  <p className="text-xs text-muted-foreground truncate">
-                    {user.email}
-                  </p>
-                </div>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="h-8 w-8 hover:bg-destructive/10 hover:text-destructive"
-                  onClick={signOut}
-                  title="Sign out"
-                >
-                  <LogOut className="h-4 w-4" />
-                </Button>
-              </motion.div>
-            ) : (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="space-y-2"
-              >
-                <p className="text-xs text-muted-foreground text-center px-2">
-                  Sign in to save your chats
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex items-center gap-3 p-3 rounded-xl bg-secondary/50 border border-border"
+            >
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center shadow-lg">
+                <User className="h-5 w-5 text-white" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium truncate">Offline Mode</p>
+                <p className="text-xs text-muted-foreground truncate">
+                  Local backend + SQLite
                 </p>
-                <Button
-                  className="w-full gap-2"
-                  onClick={() => router.push('/signin')}
-                >
-                  <LogIn className="h-4 w-4" />
-                  Sign In
-                </Button>
-              </motion.div>
-            )}
+              </div>
+            </motion.div>
           </div>
         </div>
       </motion.aside>

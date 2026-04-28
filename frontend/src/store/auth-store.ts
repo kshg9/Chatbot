@@ -1,11 +1,9 @@
 import { create } from 'zustand';
-import { supabase } from '@/lib/supabase';
-import { User } from '@supabase/supabase-js';
 
 interface AuthStore {
-  user: User | null;
+  user: { id: string; email: string; created_at: string } | null;
   loading: boolean;
-  setUser: (user: User | null) => void;
+  setUser: (user: { id: string; email: string; created_at: string } | null) => void;
   setLoading: (loading: boolean) => void;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signUp: (email: string, password: string, fullName?: string) => Promise<{ error: Error | null }>;
@@ -20,58 +18,28 @@ export const useAuthStore = create<AuthStore>((set) => ({
   setUser: (user) => set({ user }),
   setLoading: (loading) => set({ loading }),
 
-  signIn: async (email, password) => {
-    try {
-      const { error, data } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      
-      if (error) throw error;
-      set({ user: data.user });
-      return { error: null };
-    } catch (error) {
-      return { error: error as Error };
-    }
+  signIn: async (...args) => {
+    const [email] = args;
+    return { error: new Error(`Offline mode: sign-in is disabled for ${email}.`) };
   },
 
-  signUp: async (email, password, fullName) => {
-    try {
-      const { error, data } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            full_name: fullName,
-          },
-        },
-      });
-      
-      if (error) throw error;
-      set({ user: data.user });
-      return { error: null };
-    } catch (error) {
-      return { error: error as Error };
-    }
+  signUp: async (...args) => {
+    const [email, , fullName] = args;
+    return { error: new Error(`Offline mode: sign-up is disabled for ${email}${fullName ? ` (${fullName})` : ''}.`) };
   },
 
   signOut: async () => {
-    await supabase.auth.signOut();
     set({ user: null });
   },
 
   initialize: async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      set({ user: session?.user ?? null, loading: false });
-
-      // Listen for auth changes
-      supabase.auth.onAuthStateChange((_event, session) => {
-        set({ user: session?.user ?? null });
-      });
-    } catch (error) {
-      console.error('Auth initialization error:', error);
-      set({ loading: false });
-    }
+    set({
+      user: {
+        id: 'local-user',
+        email: 'offline@local',
+        created_at: new Date().toISOString(),
+      },
+      loading: false,
+    });
   },
 }));

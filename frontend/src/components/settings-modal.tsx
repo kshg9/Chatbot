@@ -8,13 +8,11 @@ import {
   Moon,
   Monitor,
   Trash2,
-  LogOut,
   User,
   Palette,
   Cpu,
 } from 'lucide-react';
 import { useChatStore } from '@/store/chat-store';
-import { useAuthStore } from '@/store/auth-store';
 import { useTheme } from '@/components/theme-provider';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -26,7 +24,6 @@ interface SettingsModalProps {
 
 export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const { settings, updateSettings, clearAllChats } = useChatStore();
-  const { user, signOut } = useAuthStore();
   const { theme, setTheme } = useTheme();
   const [activeTab, setActiveTab] = useState<'general' | 'model' | 'account'>('general');
   const [showClearConfirm, setShowClearConfirm] = useState(false);
@@ -245,42 +242,17 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
                 {activeTab === 'account' && (
                   <div className="space-y-6">
-                    {user ? (
-                      <>
-                        <div className="flex items-center gap-4 p-4 bg-secondary rounded-xl">
-                          <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
-                            <User className="h-6 w-6 text-primary" />
-                          </div>
-                          <div>
-                            <p className="font-medium">{user.email}</p>
-                            <p className="text-sm text-muted-foreground">
-                              Member since {new Date(user.created_at).toLocaleDateString()}
-                            </p>
-                          </div>
-                        </div>
-
-                        <Button
-                          variant="outline"
-                          className="w-full justify-start gap-2"
-                          onClick={signOut}
-                        >
-                          <LogOut className="h-4 w-4" />
-                          Sign out
-                        </Button>
-                      </>
-                    ) : (
-                      <div className="text-center py-8">
-                        <p className="text-muted-foreground mb-4">
-                          Sign in to sync your chats across devices
-                        </p>
-                        <Button
-                          onClick={onClose}
-                          className="gap-2"
-                        >
-                          Sign in
-                        </Button>
+                    <div className="flex items-center gap-4 p-4 bg-secondary rounded-xl">
+                      <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
+                        <User className="h-6 w-6 text-primary" />
                       </div>
-                    )}
+                      <div>
+                        <p className="font-medium">Offline workspace</p>
+                        <p className="text-sm text-muted-foreground">
+                          The original UI is connected to your local backend and local SQLite storage
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
