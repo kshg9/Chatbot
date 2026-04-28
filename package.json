@@ -3,6 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "project": "bash -lc '(cd backend && uv run main.py) & (cd frontend && npm run dev) & wait'"
+    "project": "concurrently \"uv --directory backend run main.py\" \"npm --prefix frontend run dev\"",
+    "install:frontend": "npm --prefix frontend install",
+    "install:backend": "uv --directory backend sync",
+    "postinstall": "npm run install:frontend && npm run install:backend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
   }
 }
