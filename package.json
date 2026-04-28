@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "project": "concurrently \"(cd backend && uv run main.py)\" \"(cd frontend && npm run dev)\""
-  },
-  "devDependencies": {
-    "concurrently": "^8.0.1"
+    "project": "bash -lc '(cd backend && uv run main.py) & (cd frontend && npm run dev) & wait'"
   }
 }
